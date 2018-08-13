@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="jquery.gridster.js"></script>
+    <link rel="stylesheet" href="jquery.gridster.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul,
+        li {
+            list-style: none;
+        }
+
+        li {
+            border: 1px solid gray;
+            box-sizing: border-box;
+            /* writing-mode: vertical-lr; */
+        }
+
+        .gridster {
+            width: 50%;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <div id='addwidget' @click='addwidget' style="font-size: 120px; cursor: pointer; position: absolute;left: 100px; top: 100px;">+</div>
+
+        <div class="gridster">
+            <ul>
+                <li v-for='e in griddataset' :data-row="e.row" :data-col="e.col" :data-sizex="e.size_x" :data-sizey="e.size_y" :data-equip='e.equip'>
+                    <component :is='e.equip'></component>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+    <script src="instancedrag.js"></script>
+</body>
+
+</html>
