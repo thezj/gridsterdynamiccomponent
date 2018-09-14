@@ -41,7 +41,7 @@
         <div id='addwidget' @click='addwidget' style="font-size: 120px; cursor: pointer; position: absolute;left: 100px; top: 100px;">+</div>
 
         <div class="gridster">
-            <ul>
+            <ul :key='refresh'>
                 <li v-for='e in griddataset' :data-row="e.row" :data-col="e.col" :data-sizex="e.size_x" :data-sizey="e.size_y" :data-equip='e.equip'>
                     <component :is='e.equip'></component>
                 </li>

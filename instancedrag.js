@@ -2,6 +2,170 @@ var app = new Vue({
     el: '#app',
     data: {
         griddataset: null,
+        refresh: 1
+    },
+    mounted() {
+        let griddataset = localStorage.getItem(`recentdata`);
+        if (!griddataset) {
+            this.griddataset = [{
+                "col": 1,
+                "row": 1,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component1"
+            }, {
+                "col": 1,
+                "row": 2,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component2"
+            }, {
+                "col": 1,
+                "row": 3,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component3"
+            }, {
+                "col": 2,
+                "row": 1,
+                "size_x": 2,
+                "size_y": 1,
+                "equip": "component4"
+            }, {
+                "col": 2,
+                "row": 2,
+                "size_x": 2,
+                "size_y": 2,
+                "equip": "component5"
+            }, {
+                "col": 4,
+                "row": 1,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component6"
+            }, {
+                "col": 4,
+                "row": 2,
+                "size_x": 2,
+                "size_y": 1,
+                "equip": "component7"
+            }, {
+                "col": 4,
+                "row": 3,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component8"
+            }, {
+                "col": 5,
+                "row": 1,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component9"
+            }, {
+                "col": 4,
+                "row": 4,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component10"
+            }, {
+                "col": 6,
+                "row": 1,
+                "size_x": 1,
+                "size_y": 1,
+                "equip": "component11"
+            }, {
+                "col": 6,
+                "row": 2,
+                "size_x": 1,
+                "size_y": 2,
+                "equip": "component12"
+            }]
+            localStorage.setItem(`recentdata`, JSON.stringify(this.griddataset));
+        } else {
+            this.griddataset = JSON.parse(griddataset)
+        }
+
+
+        this.refreshwidget()
+
+
+
+    },
+    methods: {
+
+        //刷新gridster
+        refreshwidget() {
+            let vm = this
+
+            //初始化gridster
+            $(function () {
+
+                //初始化gridster
+                window.gridster = $('.gridster ul').gridster({
+                    shift_widgets_up: false,
+                    shift_larger_widgets_down: false,
+                    max_cols: 6, //最多能创建多少列
+                    widget_base_dimensions: ['auto', 140], //Base widget dimensions in pixels. The first index is the width, the second is the height.
+                    resize: {
+                        enabled: false //Set to true to enable drag-and-drop widget resizing. This setting doesn't affect to the resize_widget method.
+                    },
+                    serialize_params: function ($w, wgd) {
+                        return {
+                            col: wgd.col,
+                            row: wgd.row,
+                            size_x: wgd.size_x,
+                            size_y: wgd.size_y,
+                            equip: wgd.el[0].dataset.equip
+                        }
+                    },
+                    draggable: {
+                        stop(e, ui) {
+                            savegrid()
+                        }
+                    }
+                }).data('gridster')
+
+
+
+                //删除widget
+                $(document).on("dblclick", '.gridster li', function () {
+                    gridster.remove_widget(this, c => {
+                        savegrid()
+                    });
+                })
+
+                //保存序列化的grid
+                let savegrid = function () {
+                    let s = gridster.serialize()
+                    console.log(JSON.stringify(s))
+                    localStorage.setItem(`recentdata`, JSON.stringify(s));
+                }
+
+                savegrid()
+
+            })
+        },
+
+        //添加widget
+        addwidget() {
+            let x = 0
+            this.griddataset.map(i => {
+                x < i.row + i.size_y ? x = i.row + i.size_y : null
+            })
+
+            this.griddataset.push({
+                "col": 1,
+                "row": 1,
+                "size_x": 3,
+                "size_y": 2,
+                "equip": "extracom"
+            })
+
+            //重置gridster
+            window.gridster.destroy()
+            this.refresh = Math.random()
+            this.refreshwidget()
+        }
     },
     components: {
         component1: {
@@ -115,165 +279,4 @@ var app = new Vue({
         },
 
     },
-    mounted() {
-        let griddataset = localStorage.getItem(`recentdata`);
-        if (!griddataset) {
-            this.griddataset = [{
-                "col": 1,
-                "row": 1,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component1"
-            }, {
-                "col": 1,
-                "row": 2,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component2"
-            }, {
-                "col": 1,
-                "row": 3,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component3"
-            }, {
-                "col": 2,
-                "row": 1,
-                "size_x": 2,
-                "size_y": 1,
-                "equip": "component4"
-            }, {
-                "col": 2,
-                "row": 2,
-                "size_x": 2,
-                "size_y": 2,
-                "equip": "component5"
-            }, {
-                "col": 4,
-                "row": 1,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component6"
-            }, {
-                "col": 4,
-                "row": 2,
-                "size_x": 2,
-                "size_y": 1,
-                "equip": "component7"
-            }, {
-                "col": 4,
-                "row": 3,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component8"
-            }, {
-                "col": 5,
-                "row": 1,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component9"
-            }, {
-                "col": 4,
-                "row": 4,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component10"
-            }, {
-                "col": 6,
-                "row": 1,
-                "size_x": 1,
-                "size_y": 1,
-                "equip": "component11"
-            }, {
-                "col": 6,
-                "row": 2,
-                "size_x": 1,
-                "size_y": 2,
-                "equip": "component12"
-            }]
-            localStorage.setItem(`recentdata`, JSON.stringify(this.griddataset));
-        } else {
-            this.griddataset = JSON.parse(griddataset)
-        }
-
-
-        this.refreshwidget()
-
-
-
-    },
-    methods: {
-        //刷新gridster
-        refreshwidget() {
-            let vm = this
-
-            //初始化gridster
-            $(function () {
-
-                //初始化gridster
-                window.gridster = $('.gridster ul').gridster({
-                    shift_widgets_up: false,
-                    shift_larger_widgets_down: false,
-                    max_cols: 6, //最多能创建多少列
-                    widget_base_dimensions: ['auto', 140], //Base widget dimensions in pixels. The first index is the width, the second is the height.
-                    resize: {
-                        enabled: false //Set to true to enable drag-and-drop widget resizing. This setting doesn't affect to the resize_widget method.
-                    },
-                    serialize_params: function ($w, wgd) {
-                        return {
-                            col: wgd.col,
-                            row: wgd.row,
-                            size_x: wgd.size_x,
-                            size_y: wgd.size_y,
-                            equip: wgd.el[0].dataset.equip
-                        }
-                    },
-                    draggable: {
-                        stop(e, ui) {
-                            savegrid()
-                        }
-                    }
-                }).data('gridster')
-
-                
-
-                //删除widget
-                $(document).on("dblclick", '.gridster li', function () {
-                    gridster.remove_widget(this, c => {
-                        savegrid()
-                    });
-                })
-
-                //保存序列化的grid
-                let savegrid = function () {
-                    let s = gridster.serialize()
-                    console.log(JSON.stringify(s))
-                    localStorage.setItem(`recentdata`, JSON.stringify(s));
-                }
-
-                savegrid()
-
-            })
-        },
-        //添加widget
-        addwidget() {
-            let x = 0
-            this.griddataset.map(i => {
-                x < i.row + i.size_y ? x = i.row + i.size_y : null
-            })
-
-            this.griddataset.push({
-                "col": 1,
-                "row": 1,
-                "size_x": 3,
-                "size_y": 2,
-                "equip": "extracom"
-            })
-
-            
-
-            window.gridster.destroy()
-            this.refreshwidget()
-        }
-    }
 })
